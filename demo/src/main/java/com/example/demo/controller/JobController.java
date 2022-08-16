@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.example.demo.entity.Task;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.JobAndTrigger;
 import com.example.demo.job.BaseJob;
-import com.example.demo.service.IJobAndTriggerService;
+import com.example.demo.service.JobAndTriggerService;
 import com.github.pagehelper.PageInfo;
 
 
@@ -33,7 +34,16 @@ import com.github.pagehelper.PageInfo;
 public class JobController 
 {
 	@Autowired
-	private IJobAndTriggerService iJobAndTriggerService;
+	private JobAndTriggerService jobAndTriggerService;
+
+	@GetMapping(value="/addtask")
+	public void addTask(@RequestParam(value="type")Integer type,
+							  @RequestParam(value="cronExpression")String cronExpression) throws Exception {
+			Task task = new Task();
+			task.setCronExpression(cronExpression);
+			task.setType(type);
+			jobAndTriggerService.addTask(task);
+		}
 	
 	//加入Qulifier注解，通过名称注入bean
 	@Autowired @Qualifier("Scheduler")
@@ -145,7 +155,7 @@ public class JobController
 	@GetMapping(value="/queryjob")
 	public Map<String, Object> queryjob(@RequestParam(value="pageNum")Integer pageNum, @RequestParam(value="pageSize")Integer pageSize) 
 	{			
-		PageInfo<JobAndTrigger> jobAndTrigger = iJobAndTriggerService.getJobAndTriggerDetails(pageNum, pageSize);
+		PageInfo<JobAndTrigger> jobAndTrigger = jobAndTriggerService.getJobAndTriggerDetails(pageNum, pageSize);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("JobAndTrigger", jobAndTrigger);
 		map.put("number", jobAndTrigger.getTotal());

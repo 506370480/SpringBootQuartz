@@ -14,9 +14,8 @@ public class HelloJob implements BaseJob {
           
     }  
      
-    public void execute(JobExecutionContext context)  
-        throws JobExecutionException {  
-        _log.error("Hello Job执行时间: " + new Date());  
-          
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        _log.error("Hello Job执行时间: " + new Date());
+        System.out.println("Hello Job执行时间: " + new Date() +"  "+context.getTrigger().toString()+"type"+context.getMergedJobDataMap().get("type"));
     }  
 }  
