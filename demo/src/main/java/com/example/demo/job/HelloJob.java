@@ -1,6 +1,7 @@
 package com.example.demo.job;
 
-import java.util.Date;  
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.slf4j.Logger;  
 import org.slf4j.LoggerFactory;   
 import org.quartz.JobExecutionContext;  
@@ -15,7 +16,6 @@ public class HelloJob implements BaseJob {
     }  
      
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        _log.error("Hello Job执行时间: " + new Date());
-        System.out.println("Hello Job执行时间: " + new Date() +"  "+context.getTrigger().toString()+"type"+context.getMergedJobDataMap().get("type"));
+        System.out.println("Hello Job执行时间: " + new SimpleDateFormat("hh:mm:ss").format(new Date()) +"  "+context.getTrigger().toString()+"type: "+context.getMergedJobDataMap().get("type"));
     }  
 }  

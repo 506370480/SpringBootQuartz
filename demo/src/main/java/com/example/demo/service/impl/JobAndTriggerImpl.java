@@ -37,16 +37,18 @@ public class JobAndTriggerImpl implements JobAndTriggerService {
 	public void addTask(Task task) throws SchedulerException {
 		SchedulerFactory schedFactory = new StdSchedulerFactory();
 		Scheduler scheduler = schedFactory.getScheduler();
+		synchronized(this) {
+			JobDetail jobDetail = newJob(HelloJob.class)
+					.withIdentity("myJob" + i, "group1")
+					.build();
 
-		JobDetail jobDetail = newJob(HelloJob.class)
-				.withIdentity("myJob", "group1")
-				.build();
+			CronTrigger trigger = newTrigger().withIdentity("trigger" + i, "group1")
+					.withSchedule(CronScheduleBuilder.cronSchedule(task.getCronExpression())).usingJobData("type", task.getType()).build();
 
-		CronTrigger trigger = newTrigger().withIdentity("trigger"+i, "group1")
-				.withSchedule(CronScheduleBuilder.cronSchedule(task.getCronExpression())).usingJobData("type",task.getType()).build();
+			i++;
 
-		i++;
-		scheduler.scheduleJob(jobDetail, trigger);
+			scheduler.scheduleJob(jobDetail, trigger);
+		}
 	}
 
 }
